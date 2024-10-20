@@ -79,6 +79,42 @@
             margin-top: 30px;
             color: #ff4500;
         }
+        .input-container {
+            margin-top: 20px;
+        }
+        .input-container input {
+            padding: 10px;
+            font-size: 16px;
+            width: 80%;
+            max-width: 400px;
+        }
+        .input-container button {
+            padding: 10px;
+            font-size: 16px;
+            margin-top: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+        }
+        .number-inputs {
+            margin: 10px 0;
+        }
+        .input-inputs input {
+            padding: 10px;
+            font-size: 10px;
+            width: 80%;
+            max-width: 400px;
+        }
+        .input-inputs button {
+            padding: 10px;
+            font-size: 10px;
+            margin-top: 10px;
+            background-color: #48aa4b;
+            color: white;
+            border: none;
+            border-radius: 8px;
+        }
         /* Responsive Design */
         @media (max-width: 600px) {
             h1 {
@@ -92,10 +128,55 @@
                 font-size: 20px;
             }
         }
+
+      /* 범위 설정 및 제외 설정 버튼 크기 및 색상 조정 */
+      .number-inputs button {
+          padding: 8px 16px; /* 크기 축소 */
+          font-size: 14px; /* 텍스트 크기 축소 */
+          background-color: #007BFF; /* 파란색 버튼 */
+          color: white;
+          border: none;
+          border-radius: 5px;
+      }
+
+      .number-inputs button:hover {
+          background-color: #0056b3; /* hover 시 어두운 파란색 */
+      }
+
+      /* 제외 번호 입력 설정 버튼 색상 */
+      .input-container button {
+          padding: 8px 16px; /* 크기 축소 */
+          font-size: 14px; /* 텍스트 크기 축소 */
+          background-color: #dc3545; /* 빨간색 버튼 */
+          color: white;
+          border: none;
+          border-radius: 5px;
+      }
+
+      .input-container button:hover {
+          background-color: #c82333; /* hover 시 어두운 빨간색 */
+      }       
     </style>
 </head>
 <body>
     <h1>2024 오바수 경품추첨!</h1>
+
+    <!-- min/max number inputs -->
+    <div class="number-inputs">
+      <label for="minNumber">당첨최소번호:</label>
+      <input type="number" id="minNumber" placeholder="최소 번호 입력">
+      <label for="maxNumber">당첨최대번호:</label>
+      <input type="number" id="maxNumber" placeholder="최대 번호 입력">
+      <button onclick="setNumberRange()">범위 설정</button>
+  </div>
+    
+    <div class="number-inputs">
+        <input type="text" id="excludeNumbers" placeholder="당첨 제외 번호입력 예: 1,2,3">
+        <button onclick="setExcludedNumbers()">슈트당첨자번호제외설정</button>
+    </div>
+
+
+
     <div class="prize-container">
         <div class="prize-item">
             수모7종세트 (1개): <button onclick="draw('수모7종세트', 1)">추첨</button>
@@ -137,9 +218,32 @@
     <div class="remaining-numbers" id="remainingNumbers"></div>
 
     <script>
-        const min = 1;
-        const max = 100;
+        let min = 1;
+        let max = 100;
         let drawnNumbers = [];
+        let excludedNumbers = [];
+
+        // 제외 번호 설정 함수
+        function setExcludedNumbers() {
+            const excludeInput = document.getElementById('excludeNumbers').value;
+            excludedNumbers = excludeInput.split(',')
+                                .map(num => parseInt(num.trim()))
+                                .filter(num => !isNaN(num));
+            alert(`다음 번호는 제외됩니다: ${excludedNumbers.join(', ')}`);
+        }
+
+        // min/max 범위 설정 함수
+        function setNumberRange() {
+            const minInput = parseInt(document.getElementById('minNumber').value);
+            const maxInput = parseInt(document.getElementById('maxNumber').value);
+            if (!isNaN(minInput) && !isNaN(maxInput) && minInput < maxInput) {
+                min = minInput;
+                max = maxInput;
+                alert(`번호 범위가 설정되었습니다: ${min} ~ ${max}`);
+            } else {
+                alert('유효한 최소 및 최대 번호를 입력하세요.');
+            }
+        }
 
         function draw(prize, count) {
             const resultElement = document.getElementById(`result-${prize}`);
@@ -152,27 +256,41 @@
             modal.style.display = 'flex';
 
             setTimeout(() => {
-                const drawn = [];
-                while (drawn.length < count) {
-                    const number = Math.floor(Math.random() * (max - min + 1)) + min;
-                    if (!drawnNumbers.includes(number)) {
-                        drawn.push(number);
-                        drawnNumbers.push(number);
+                let availableNumbers = [];
+                for (let i = min; i <= max; i++) {
+                    if (!drawnNumbers.includes(i) && !excludedNumbers.includes(i)) {
+                        availableNumbers.push(i);
                     }
+                }
+
+                let actualDrawCount = Math.min(count, availableNumbers.length);
+
+                const drawn = [];
+                while (drawn.length < actualDrawCount) {
+                    const index = Math.floor(Math.random() * availableNumbers.length);
+                    const number = availableNumbers.splice(index, 1)[0];
+                    drawn.push(number);
+                    drawnNumbers.push(number);
                 }
 
                 // Hide modal and display result
                 modal.style.display = 'none';
-                resultElement.innerHTML = `당첨번호: ${drawn.join(', ')}`;
+
+                // Check if drawn numbers are less than requested
+                if (actualDrawCount < count) {
+                    resultElement.innerHTML = `당첨번호: ${drawn.join(', ')} (설정된 수보다 적게 당첨되었습니다: ${count - actualDrawCount}개 부족)`;
+                } else {
+                    resultElement.innerHTML = `당첨번호: ${drawn.join(', ')}`;
+                }
 
                 checkRemaining();
-            }, 5000); // Animation for 5 seconds
+            }, 500); // Animation for 5 seconds
         }
 
         function checkRemaining() {
             const remainingNumbers = [];
             for (let i = min; i <= max; i++) {
-                if (!drawnNumbers.includes(i)) {
+                if (!drawnNumbers.includes(i) && !excludedNumbers.includes(i)) {
                     remainingNumbers.push(i);
                 }
             }
