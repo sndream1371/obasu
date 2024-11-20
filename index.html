@@ -77,6 +77,29 @@
             max-width: 500px;
             margin: auto;
         }
+
+        .container {
+            display: flex;
+            align-items: center; /* 수직 중간 정렬 */
+            justify-content: center; /* 가로 중간 정렬 */
+            text-align: center; /* 텍스트 가운데 정렬 */
+            height:100px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            font-size: 36px;
+            color: red;      
+            width: 80%;
+            max-width: 500px;                  
+        }
+        .container img {
+            margin-right: 20px; /* 이미지와 텍스트 간 간격 */
+            max-height: 250px; /* 이미지 크기 제한 (선택 사항) */
+        }
+        .container span {
+            font-size: 50px; /* 텍스트 크기 설정 */
+        }
+
         .remaining-numbers {
             font-size: 18px;
             margin-top: 30px;
@@ -238,9 +261,15 @@
 
     <!-- Modal for animation -->
     <div id="modal" class="modal">
-        <div class="modal-content">
-            <img src="./img/오바수.jpg" height="100" width="110" > 추첨 중...
-        </div>
+        <!-- <div class="modal-content">
+            <img src="./img/오바수.jpg" height="100" width="110" > 
+            추첨 중...
+        </div> -->
+
+        <div class="container">
+            <img src="./img/오바수.jpg" height="100" width="110" > 
+            <span>추첨 중...</span>
+        </div>        
     </div>
 
     <div class="remaining-numbers" id="remainingNumbers"></div>
