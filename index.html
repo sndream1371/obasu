@@ -13,11 +13,11 @@
             background-color: #f0f8ff;
         }
         h1 {
-            font-size: 50px;
+            font-size: 400%;
             font-weight: bold;
-            color: #ff4500;
-            text-shadow: 3px 3px #ffdab9;
-            margin-top: 20px;
+            color: #1943ff;
+            text-shadow: 3px 3px #bebebe;
+            margin-top: 0px;
         }
         .prize-container {
             margin: 30px 0;
@@ -199,14 +199,83 @@
         /* background-size:cover;    */
         background-position:center;   
     }      
+
+    /* 모달 전체 컨테이너 */
+    .modal-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7); /* 반투명 어두운 배경 */
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+    }
+
+    /* 모달 내용 */
+    .modal-content2 {
+        background: linear-gradient(135deg, #00c6ff, #0072ff); /* 바다를 연상시키는 그라데이션 */
+        color: white;
+        text-align: center;
+        padding: 2rem;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        position: relative;
+        max-width: 600px;
+        width: 90%;
+        animation: float 3s ease-in-out infinite;
+    }
+
+    /* 헤더 텍스트 */
+    .modal-content2 h1 {
+        font-size: 3.5rem;
+        margin-bottom: 1rem;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    /* 본문 텍스트 */
+    .modal-content2 p {
+        font-size: 2rem;
+        margin-bottom: 2rem;
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);
+    }
+
+    /* 확인 버튼 */
+    .close-button {
+        background: #ffffff;
+        color: #0072ff;
+        border: none;
+        padding: 0.8rem 1.5rem;
+        font-size: 1rem;
+        border-radius: 25px;
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .close-button:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 10px rgba(0, 114, 255, 0.3);
+    }
+
+    /* 모달에 애니메이션 추가 */
+    @keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+    }
     </style>
 </head>
 <body>
-    <!-- <h1>2024 오바수 경품추첨!</h1> -->
+    <h1>2024 오바수 경품추첨!</h1>
 
-    <div class="t_img">
-        <!-- <img src="./img/obasu_2024_banner.jpg"> -->
-    </div>
+    <!-- <div class="t_img">
+        <img src="./img/obasu_2024_banner.jpg">
+    </div> -->
 
     <div class="prize-container">
         <!-- <div class="prize-item">
@@ -250,12 +319,14 @@
       <label for="maxNumber">당첨종료번호:</label>
       <input type="number" id="maxNumber" placeholder="최대 번호 입력">
       <button onclick="setNumberRange()">범위 설정</button>
-  </div>
+     </div>
     
     <div class="number-inputs">
         <input type="text" id="excludeNumbers" placeholder="당첨 제외 번호입력 예: 1,2,3">
         <button onclick="setExcludedNumbers()">슈트당첨자번호제외설정</button>
     </div>    
+
+    <button onclick="lastMessage()">End</button>
 
     <!-- Modal for animation -->
     <div id="modal" class="modal">
@@ -265,12 +336,21 @@
         </div> -->
 
         <div class="container">
-            <img src="./img/오바수.jpg" height="100" width="110" > 
+            <!-- <img src="./img/오바수.jpg" height="100" width="110" >  -->
+            <img src="./img/오바수수모.gif" height="100" width="110" > 
             <span>추첨 중...</span>
         </div>        
     </div>
 
     <div class="remaining-numbers" id="remainingNumbers"></div>
+
+    <div id="lastMessage" class="modal-container">
+        <div class="modal-content2">
+          <h1>2024년, 함께해 주셔서 감사합니다!</h1>
+          <p>새해에도 건강한 바다수영 함께해요!</p>
+          <!-- <button class="close-button">확인</button> -->
+        </div>
+    </div>
 
     <script>
         let min = 1;
@@ -352,6 +432,17 @@
             document.getElementById('remainingNumbers').innerHTML = 
                 `미당첨 번호: ${remainingNumbers.join(', ')}`;
         }
+
+        function lastMessage() {
+            const modal = document.getElementById('lastMessage');
+            
+            // Show modal with animation
+            modal.style.display = 'flex'; 
+
+
+            // modal.style.display = 'none';
+        }
+
     </script>
 </body>
 </html>
